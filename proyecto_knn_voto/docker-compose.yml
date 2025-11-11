@@ -1,0 +1,22 @@
+# Definimos los dos servicios: 'backend' y 'frontend'
+services:
+
+  # Servicio del Backend (API Flask)
+  backend:
+    build: ./backend          # Construye la imagen usando el Dockerfile en la carpeta './backend'
+    ports:
+      - "5000:5000"         # Mapea el puerto 5000 de tu PC al puerto 5000 del contenedor
+    volumes:
+      - ./backend:/app      # (Opcional, para desarrollo) Monta el código local; si cambias app.py, se reinicia solo.
+    
+  # Servicio del Frontend (Interfaz Nginx)
+  frontend:
+    build: ./frontend         # Construye la imagen usando el Dockerfile en la carpeta './frontend'
+    ports:
+      - "8080:80"           # Mapea el puerto 8080 de tu PC al puerto 80 del contenedor (Nginx)
+    depends_on:
+      - backend             # Le dice a Docker que inicie el backend antes que el frontend
+    # *** AGREGAR ESTAS LÍNEAS ***
+    volumes:
+      # Monta el archivo de configuración de Nginx
+      - ./nginx_config/nginx.conf:/etc/nginx/nginx.conf:ro
